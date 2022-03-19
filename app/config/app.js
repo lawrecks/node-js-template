@@ -1,52 +1,21 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
-import fs from 'fs';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import fileStreamRotator from 'file-stream-rotator';
 import helmet from 'helmet';
 import cors from 'cors';
-import initLogger from './logger';
 import routes from '../routes/v1';
 
-const logDirectory = './log';
-const checkLogDir = fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-
 const expressConfig = (app) => {
-  let accessLogStream;
-  let logger;
   const env = app.get('env');
 
-  // init logger
-  if (env === 'development') {
-    logger = initLogger('development');
-  } else if (env === 'production') {
-    logger = initLogger('production');
-  } else if (env === 'test') {
-    logger = initLogger('test');
-  } else {
-    logger = initLogger();
-  }
-
-  global.logger = logger;
   logger.info('App is starting...');
   logger.info(`Environment is ${env}`);
-  logger.debug('Overriding \'Express\' logger');
 
-  if (checkLogDir) {
-    accessLogStream = fileStreamRotator.getStream({
-      date_format: 'YYYYMMDD',
-      filename: `${logDirectory}/access-%DATE%.log`,
-      frequency: 'weekly',
-      verbose: false,
-    });
-  }
-
-  app.use(morgan('combined', { stream: accessLogStream }));
+  app.use(morgan('combined', { stream: logger.stream }));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-
-  // Use helmet to secure Express headers
   app.use(helmet());
   app.disable('x-powered-by');
   app.use(cors());
