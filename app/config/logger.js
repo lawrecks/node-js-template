@@ -126,4 +126,7 @@ class Logger {
     return loggerInstance.init();
   }
 }
-export default Logger;
+
+const logger = Logger.createLogger({ label: 'TEMPLATE' });
+
+export default logger;

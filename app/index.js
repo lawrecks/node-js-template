@@ -2,15 +2,12 @@
 import express from 'express';
 import config, { initConfig } from './config';
 import db from './db';
-import Logger from './config/logger';
+import logger from './config/logger';
 
 const app = express();
 const host = config.HOST;
 const port = config.PORT || 3033;
 const apiVersion = config.API_VERSION || 'v1';
-
-const logger = Logger.createLogger({ label: 'TEMPLATE' });
-global.logger = logger;
 
 initConfig(app);
 

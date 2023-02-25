@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import cors from 'cors';
 import routes from '../routes/v1';
+import logger from './logger';
 
 const expressConfig = (app) => {
   const env = app.get('env');
